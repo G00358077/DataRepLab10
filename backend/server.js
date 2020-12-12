@@ -4,6 +4,7 @@ const port = 4000
 const cors = require('cors')
 const bodyParser = require("body-parser")
 const mongoose = require('mongoose');
+const path = require('path');
 
 
 // parse application/x-www-form-urlencoded
@@ -13,6 +14,10 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use(cors());
+
+app.use(express.static(path.join(__dirname, '/../build')));
+
+app.use('/static', express.static(path.join(__dirname, 'build//static')));
 
 const myConnectioString = 'mongodb+srv://admin:cloth@cluster0.pzrpn.mongodb.net/movies?retryWrites=true&w=majority';
 mongoose.connect(myConnectioString, {useNewUrlParser: true});
@@ -111,6 +116,10 @@ app.post('/api/movies', (req, res) => {
     });
 
     res.send('Item Added');
+})
+
+app.get('*', (req, res)=>{
+    res.sendFile(path.join(__dirname+'/../build/index.html'));
 })
 
 app.listen(port, () => {
